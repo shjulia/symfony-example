@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\User\UseCase\Signup\Request;
 
 use App\Model\User\Entity\User\Email;
+use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\User;
 use App\Model\User\Entity\User\UserRepository;
 use App\Model\User\Service\ConfirmTokenizer;
@@ -56,7 +57,7 @@ class Handler
             throw new \DomainException('User already exists.');
         }
 
-        $user = new User(
+        $user = User::signUpByEmail(
             Id::next(),
             new \DateTimeImmutable(),
             $email,
