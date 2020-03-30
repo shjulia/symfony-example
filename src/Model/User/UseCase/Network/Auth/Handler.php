@@ -18,7 +18,7 @@ class Handler
     {
         $this->users = $users;
         $this->flusher = $flusher;
-    }
+}
 
     public function handle(Command $command): void
     {

@@ -22,7 +22,6 @@ class Handler
      * @var Flusher
      */
     private Flusher $flusher;
-
     public function __construct(UserRepository $users, PasswordsHasher $hasher, Flusher $flusher)
     {
         $this->users = $users;
