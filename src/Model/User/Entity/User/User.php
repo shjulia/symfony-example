@@ -3,33 +3,67 @@
 namespace App\Model\User\Entity\User;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="user_users", uniqueConstraints={
+ *      @ORM\UniqueConstraint(columns={"email"}),
+ *      @ORM\UniqueConstraint(columns={"reset_token_token"})
+ * })
+ */
 class User
 {
     private const STATUS_WAIT = 'wait';
     private const STATUS_ACTIVE = 'active';
     private const STATUS_NEW = 'new';
 
+    /**
+     * @ORM\Column(type="user_user_id")
+     * @ORM\Id
+     */
     private Id $id;
 
+    /**
+     * @ORM\Column(type="user_user_email", nullable=true)
+     */
     private ?Email $email = null;
 
-    private string $passwordHash;
+    /**
+     * @ORM\Column(type="string", nullable=true, name="password_hash")
+     */
+    private ?string $passwordHash = null;
 
+    /**
+     *  @ORM\Column(type="datetime_immutable")
+     */
     private \DateTimeImmutable $date;
 
+    /**
+     * @ORM\Column(type="string", nullable=true, name="confirm_token")
+     */
     private ?string $confirmToken;
 
+    /**
+     * @ORM\Column(type="string", length=16)
+     */
     private string $status;
+
     /**
      * @var Network[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="Network", mappedBy="user", orphanRemoval=true, cascade={"persist"})
      */
     private $networks;
+
     /**
-     * @var ResetToken
+     * @ORM\Embedded(class="ResetToken", columnPrefix="reset_token_")
      */
     private ?ResetToken $resetToken = null;
 
+    /**
+     * @ORM\Column(type="user_user_role")
+     */
     private Role $role;
 
     private function __construct(
@@ -175,5 +209,15 @@ class User
     public function getRole(): Role
     {
         return $this->role;
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function checkEmbeds(): void
+    {
+        if ($this->resetToken->isEmpty()) {
+            $this->resetToken = null;
+        }
     }
 }

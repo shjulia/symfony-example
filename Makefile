@@ -1,3 +1,9 @@
+migrations-generate:
+	docker-compose run --rm php-cli php bin/console doctrine:migrations:diff
+
+migrations-migrate:
+	docker-compose run --rm php-cli php bin/console doctrine:migrations:migrate --no-interaction
+
 docker-up:
 	docker-compose up -d
 
