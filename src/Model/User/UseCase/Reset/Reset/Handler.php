@@ -31,7 +31,7 @@ class Handler
 
     public function handle(Command $command)
     {
-        if (!$user = $this->users->findBeResetToken($command->token)) {
+        if (!$user = $this->users->findByResetToken($command->token)) {
             throw new \DomainException('Incorrect or confirmed token');
         }
 
