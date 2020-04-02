@@ -17,7 +17,7 @@ class Command
      * @Assert\NotBlank()
      * @Assert\Length(min=6)
      */
-    public string $password;
+    public string $password = '';
 
     public function __construct(string $token)
     {

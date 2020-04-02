@@ -43,7 +43,7 @@ class User
     /**
      * @ORM\Column(type="string", nullable=true, name="confirm_token")
      */
-    private ?string $confirmToken;
+    private $confirmToken;
 
     /**
      * @ORM\Column(type="string", length=16)
