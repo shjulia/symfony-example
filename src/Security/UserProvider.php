@@ -35,7 +35,8 @@ class UserProvider implements UserProviderInterface
             $user->id,
             $user->email,
             $user->password_hash,
-            $user->role
+            $user->role,
+            $user->status
         );
     }
 
