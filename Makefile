@@ -10,5 +10,8 @@ docker-up:
 test:
 	docker-compose run --rm php-cli php bin/phpunit
 
+fixtures:
+	docker-compose run --rm php-cli php bin/console doctrine:fixtures:load --no-interaction
+
 dump-autoload:
 	docker-compose exec php-cli composer dump-autoload
