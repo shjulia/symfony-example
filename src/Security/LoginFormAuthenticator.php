@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Model\User\Entity\User\User;
+use App\Model\User\Service\PasswordsHasher;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,15 +23,21 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     use TargetPathTrait;
 
-    private $entityManager;
-    private $urlGenerator;
-    private $csrfTokenManager;
+    private EntityManagerInterface $entityManager;
+    private UrlGeneratorInterface $urlGenerator;
+    private CsrfTokenManagerInterface $csrfTokenManager;
+    private PasswordsHasher $hasher;
 
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UrlGeneratorInterface $urlGenerator,
+        CsrfTokenManagerInterface $csrfTokenManager,
+        PasswordsHasher $hasher
+    ) {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->hasher = $hasher;
     }
 
     public function supports(Request $request)
@@ -54,14 +61,14 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $credentials;
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): UserInterface
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+        $user = $userProvider->loadUserByUsername($credentials['email']);
 
         if (!$user) {
             // fail authentication with a custom error
@@ -73,9 +80,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        // Check the user's password or other credentials and return true or false
-        // If there are no credentials to check, you can just return true
-        throw new \Exception('TODO: check the credentials inside '.__FILE__);
+        return $this->hasher->validate($credentials['password'], $user->getPassword());
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
