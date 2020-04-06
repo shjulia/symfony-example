@@ -4,11 +4,14 @@ security:
         fetcher:
             id: App\Security\UserProvider
         # used to reload user from session & other features (e.g. switch_user)
+    encoders:
+        App\Security\UserIdentity: native
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            http_basic: ~
             anonymous: true
             user_checker: App\Security\UserChecker
             guard:
