@@ -15,3 +15,12 @@ fixtures:
 
 dump-autoload:
 	docker-compose exec php-cli composer dump-autoload
+
+assets-install:
+	docker-compose run --rm nodejs npm install
+
+assets-dev:
+	docker-compose run --rm nodejs npm run dev
+
+assets-watch:
+	docker-compose run --rm nodejs npm run watch
