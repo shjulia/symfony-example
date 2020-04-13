@@ -54,8 +54,15 @@ services:
     ports:
       - "54321:5432"
 
+  node-watch:
+    image: node:11.13-alpine
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
+
   nodejs:
-    image: node:10.11-jessie
+    image: node:11.13-alpine
     volumes:
       - ./:/var/www
     working_dir: /var/www
