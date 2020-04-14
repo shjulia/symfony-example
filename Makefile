@@ -1,6 +1,6 @@
 start: docker-down-clear ready-clear docker-build docker-up init
 
-init: composer-install assets-install wait-db migrations-migrate fixtures ready
+init: composer-install assets-install oauth-keys wait-db migrations-migrate fixtures ready
 
 docker-up:
 	docker-compose up -d
@@ -13,6 +13,7 @@ docker-down-clear:
 
 test:
 	docker-compose run --rm php-cli php bin/phpunit
+
 fixtures:
 	docker-compose run --rm php-cli php bin/console doctrine:fixtures:load --no-interaction
 
@@ -45,3 +46,9 @@ ready-clear:
 
 ready:
 	docker run --rm -v ${PWD}:/app --workdir=/app alpine touch .ready
+
+oauth-keys:
+	docker-compose run --rm manager-php-cli mkdir -p var/oauth
+	docker-compose run --rm manager-php-cli openssl genrsa -out var/oauth/private.key 2048
+	docker-compose run --rm manager-php-cli openssl rsa -in var/oauth/private.key -pubout -out var/oauth/public.key
+	docker-compose run --rm manager-php-cli chmod 644 var/oauth/private.key var/oauth/public.key
