@@ -1,7 +1,5 @@
 trikoder_oauth2:
-
     authorization_server:
-
         private_key: '%env(OAUTH_PRIVATE_KEY)%'
         private_key_passphrase: ~
         encryption_key: '%env(OAUTH_ENCRYPTION_KEY)%'

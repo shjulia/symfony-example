@@ -10,6 +10,14 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api:
+            pattern: ^/api
+            anonymous: true
+            stateless: true
+            oauth2: true
+        api_token:
+            pattern: ^/token$
+            security: false
         main:
             http_basic: ~
             anonymous: true

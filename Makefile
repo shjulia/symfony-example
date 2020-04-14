@@ -42,13 +42,13 @@ migrations-migrate:
 	docker-compose run --rm php-cli php bin/console doctrine:migrations:migrate --no-interaction
 
 ready-clear:
-	docker run --rm -v ${PWD}:/app --workdir=/app alpine rm -f .ready
+	docker run --rm -v ${PWD}:/var/www --workdir=/var/www alpine rm -f .ready
 
 ready:
-	docker run --rm -v ${PWD}:/app --workdir=/app alpine touch .ready
+	docker run --rm -v ${PWD}:/var/www --workdir=/var/www alpine touch .ready
 
 oauth-keys:
-	docker-compose run --rm manager-php-cli mkdir -p var/oauth
-	docker-compose run --rm manager-php-cli openssl genrsa -out var/oauth/private.key 2048
-	docker-compose run --rm manager-php-cli openssl rsa -in var/oauth/private.key -pubout -out var/oauth/public.key
-	docker-compose run --rm manager-php-cli chmod 644 var/oauth/private.key var/oauth/public.key
+	docker-compose run --rm php-cli mkdir -p var/oauth
+	docker-compose run --rm php-cli openssl genrsa -out var/oauth/private.key 2048
+	docker-compose run --rm php-cli openssl rsa -in var/oauth/private.key -pubout -out var/oauth/public.key
+	docker-compose run --rm php-cli chmod 644 var/oauth/private.key var/oauth/public.key

@@ -57,8 +57,8 @@ services:
   node-watch:
     image: node:11.13-alpine
     volumes:
-      - ./:/app
-    working_dir: /app
+      - ./:/var/www
+    working_dir: /var/www
     command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
 
   nodejs:
