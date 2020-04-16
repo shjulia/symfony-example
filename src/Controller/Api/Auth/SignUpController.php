@@ -53,12 +53,7 @@ class SignUpController extends AbstractController
             return new JsonResponse($json, 400, [], true);
         }
 
-        try {
-            $handler->handle($command);
-        } catch (\DomainException $e) {
-            $this->errors->error($e->getMessage(), ['exception' => $e]);
-            return $this->json(['error' => ['message' => $e->getMessage()]], 400);
-        }
+        $handler->handle($command);
 
         return $this->json([], 201);
     }
