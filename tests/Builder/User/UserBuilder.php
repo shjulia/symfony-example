@@ -80,4 +80,11 @@ class UserBuilder
         $clone->confirmed = true;
         return $clone;
     }
+
+    public function withId(Id $id): self
+    {
+        $clone = clone $this;
+        $clone->id = $id;
+        return $clone;
+    }
 }
