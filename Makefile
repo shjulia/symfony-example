@@ -1,9 +1,12 @@
 start: docker-down-clear ready-clear docker-build docker-up init
-
+restart: docker-down docker-up
 init: composer-install assets-install oauth-keys wait-db migrations-migrate fixtures ready
 
 docker-up:
 	docker-compose up -d
+
+docker-down:
+	docker-compose down --remove-orphans
 
 docker-build:
 	docker-compose build
@@ -25,6 +28,7 @@ composer-install:
 
 assets-install:
 	docker-compose run --rm nodejs npm install
+	docker-compose run --rm nodejs npm rebuild node-sass
 
 assets-dev:
 	docker-compose run --rm nodejs npm run dev
