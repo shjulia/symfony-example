@@ -17,7 +17,6 @@ class User
 {
     private const STATUS_WAIT = 'wait';
     public const STATUS_ACTIVE = 'active';
-    private const STATUS_NEW = 'new';
 
     /**
      * @ORM\Column(type="user_user_id")
@@ -155,11 +154,6 @@ class User
     public function isActive()
     {
         return $this->status === self::STATUS_ACTIVE;
-    }
-
-    public function isNew()
-    {
-        return $this->status === self::STATUS_NEW;
     }
 
     public function getId(): Id
