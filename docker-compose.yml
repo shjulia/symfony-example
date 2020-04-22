@@ -1,85 +1,88 @@
 version: '3'
 services:
-  nginx:
-    build:
-      context: ./docker
-      dockerfile: nginx.docker
-    volumes:
-      - ./:/var/www
-      - ./docker/nginx/ssl:/etc/nginx/ssl
-    ports:
-      - "443:443"
-    depends_on:
-      - php-fpm
+    nginx:
+        build:
+            context: ./docker
+            dockerfile: nginx.docker
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/ssl:/etc/nginx/ssl
+        ports:
+            - "443:443"
+        depends_on:
+            - php-fpm
 
-  php-fpm:
-    build:
-      context: ./docker
-      dockerfile: php-fpm.docker
-    volumes:
-      - ./:/var/www
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      - "DB_PORT=5432"
-      - "DB_HOST=postgres"
-      - "REDIS_PORT=6379"
-      - "REDIS_HOST=redis"
-  php-cli:
-    build:
-      context: ./docker
-      dockerfile: php-cli.docker
-    volumes:
-      - ./:/var/www
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      - "DB_PORT=5432"
-      - "DB_HOST=postgres"
-      - "REDIS_PORT=6379"
-      - "REDIS_HOST=redis"
-    working_dir: /var/www
-    tty: true
+    php-fpm:
+        build:
+            context: ./docker
+            dockerfile: php-fpm.docker
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - postgres
+            - redis
+        environment:
+            - "DB_PORT=5432"
+            - "DB_HOST=postgres"
+            - "REDIS_PORT=6379"
+            - "REDIS_HOST=redis"
+    php-cli:
+        build:
+            context: ./docker
+            dockerfile: php-cli.docker
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - postgres
+            - redis
+        environment:
+            - "DB_PORT=5432"
+            - "DB_HOST=postgres"
+            - "REDIS_PORT=6379"
+            - "REDIS_HOST=redis"
+        working_dir: /var/www
+        tty: true
 
-  postgres:
-    image: postgres:11.2-alpine
-    volumes:
-      - manager-postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: app
-    ports:
-      - "54321:5432"
+    postgres:
+        image: postgres:11.2-alpine
+        volumes:
+            - manager-postgres:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: app
+            POSTGRES_PASSWORD: secret
+            POSTGRES_DB: app
+        ports:
+           - "54321:5432"
 
-  node-watch:
-    image: node:11.13-alpine
-    volumes:
-      - ./:/var/www
-    working_dir: /var/www
-    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
+    node-watch:
+        image: node:11.13-alpine
+        volumes:
+            - ./:/var/www
+        working_dir: /var/www
+        command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
 
-  nodejs:
-    image: node:11.13-alpine
-    volumes:
-      - ./:/var/www
-    working_dir: /var/www
-    tty: true
+    nodejs:
+        image: node:11.13-alpine
+        volumes:
+            - ./:/var/www
+        working_dir: /var/www
+        tty: true
 
-  redis:
-    image: redis:3.0
-    ports:
-      - "63791:6379"
+    redis:
+        image: redis:3.0-alpine
+        ports:
+          - "63791:6379"
+        volumes:
+          - manager-redis:/data
+        command: redis-server --requirepass secret
 
-  mailer:
-    image: mailhog/mailhog
-    ports:
-      - "8082:8025"
+    mailer:
+        image: mailhog/mailhog
+        ports:
+            - "8082:8025"
 
 volumes:
-  manager-postgres:
-  manager-redis:
-  manager-queue-redis:
-  composer:
+    manager-postgres:
+    manager-redis:
+    manager-queue-redis:
+    composer:
