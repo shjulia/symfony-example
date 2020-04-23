@@ -6,6 +6,10 @@ namespace App\Model\User\UseCase\Network\Auth;
 
 class Command
 {
+    public string $firstName;
+
+    public string $lastName;
+
     public string $network;
 
     public string  $identity;

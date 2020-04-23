@@ -129,6 +129,8 @@ class UserFetcher
             ->select(
                 'id',
                 'date',
+                'name_first first_name',
+                'name_last last_name',
                 'email',
                 'role',
                 'status'
