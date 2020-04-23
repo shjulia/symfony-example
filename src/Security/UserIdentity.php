@@ -22,6 +22,12 @@ class UserIdentity implements UserInterface, EquatableInterface
      * @var string
      */
     private string $password;
+
+    /**
+     * @var string
+     */
+    private string $display;
+
     /**
      * @var string
      */
@@ -35,12 +41,14 @@ class UserIdentity implements UserInterface, EquatableInterface
         string $id,
         string $username,
         string $password,
+        string $display,
         string $role,
         string $status
     ) {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
+        $this->display = $display;
         $this->role = $role;
         $this->status = $status;
     }
@@ -51,6 +59,11 @@ class UserIdentity implements UserInterface, EquatableInterface
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getDisplay(): string
+    {
+        return $this->display;
     }
 
     /**
