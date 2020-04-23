@@ -46,7 +46,7 @@ class User
 
     /**
      * @var Email|null
-     * @ORM\Column(type="string", name="new_email", nullable=true)
+     * @ORM\Column(type="user_user_email", name="new_email", nullable=true)
      */
     private ?Email $newEmail = null;
 
