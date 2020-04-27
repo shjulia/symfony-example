@@ -12,12 +12,12 @@ class Command
      * @var string
      * @Assert\NotBlank()
      */
-    public string $firstName;
+    public string $firstName = '';
     /**
      * @var string string
      * @Assert\NotBlank()
      */
-    public string $lastName;
+    public string $lastName = '';
 
     /**
      * @Assert\NotBlank()

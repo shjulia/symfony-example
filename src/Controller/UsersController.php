@@ -8,7 +8,9 @@ use App\Model\User\Entity\User\User;
 use App\Model\User\UseCase\Create;
 use App\Model\User\UseCase\Edit;
 use App\Model\User\UseCase\Role;
+use App\Model\User\UseCase\Signup\Confirm;
 use App\ReadModel\User\UserFetcher;
+use Doctrine\ORM\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -134,6 +136,31 @@ class UsersController extends AbstractController
             'user' => $user,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/{id}/confirm", name="users.confirm", methods={"POST"})
+     * @param User $user
+     * @param Request $request
+     * @param Confirm\Manual\Handler $handler
+     * @return Response
+     */
+    public function confirm(User $user, Request $request, Confirm\Manual\Handler $handler): Response
+    {
+        if (!$this->isCsrfTokenValid('confirm', $request->request->get('token'))) {
+            return $this->redirectToRoute('users.show', ['id' => $user->getId()]);
+        }
+
+        $command = new Confirm\Manual\Command($user->getId()->getValue());
+
+        try {
+            $handler->handle($command);
+        } catch (\DomainException | EntityNotFoundException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('users.show', ['id' => $user->getId()]);
     }
 
     /**
