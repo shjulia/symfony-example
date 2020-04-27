@@ -10,6 +10,8 @@ use App\ReadModel\User\Filter\Filter;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 class UserFetcher
 {
@@ -22,12 +24,17 @@ class UserFetcher
      * @var \App\Model\User\Entity\User\UserRepository|\Doctrine\Persistence\ObjectRepository
      */
     private $repository;
+    /**
+     * @var PaginatorInterface
+     */
+    private PaginatorInterface $paginator;
 
-    public function __construct(Connection $connection, EntityManagerInterface $em)
+    public function __construct(Connection $connection, PaginatorInterface $paginator, EntityManagerInterface $em)
     {
         $this->connection = $connection;
         $this->repository = $em->getRepository(User::class);
         $this->em = $em;
+        $this->paginator = $paginator;
     }
 
     public function existsByResetToken(string $token): bool
@@ -184,9 +191,11 @@ class UserFetcher
 
     /**
      * @param Filter $filter
-     * @return array[]
+     * @param int $page
+     * @param int $size
+     * @return PaginationInterface
      */
-    public function all(Filter $filter): array
+    public function all(Filter $filter, int $page, int $size): PaginationInterface
     {
         $qb = $this->connection->createQueryBuilder()
             ->select(
@@ -220,8 +229,6 @@ class UserFetcher
             $qb->setParameter(':role', $filter->role);
         }
 
-        $stmt = $qb->execute();
-
-        return $stmt->fetchAll(FetchMode::ASSOCIATIVE);
+        return $this->paginator->paginate($qb, $page, $size);
     }
 }
